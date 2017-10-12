@@ -1,0 +1,18 @@
+# Debugfs
+/sys/kernel/debug/ion/heaps/system          u:object_r:debugfs_ion:s0
+
+# Radio
+/dev/radio(/.*)?                            u:object_r:radio_data_file:s0
+
+# NFC
+/dev/pn548                                  u:object_r:nfc_device:s0
+
+# Goodix Fingerprint
+/dev/goodix_fp*                             u:object_r:gx_fpd_device:s0
+/system/bin/gx_fpd                          u:object_r:gx_fpd_exec:s0
+
+# Goodix Fingerprint data
+/data/system/fingerprint(/.*)?              u:object_r:gx_fpd_data_file:s0
+
+# ZRAM
+/dev/block/zram[0-9]+                       u:object_r:swap_block_device:s0

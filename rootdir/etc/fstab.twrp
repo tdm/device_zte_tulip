@@ -1,0 +1,14 @@
+# Android fstab file for TWRP.
+
+#<mnt>          <type>  <src>                                           <flags>
+/boot           emmc    /dev/block/bootdevice/by-name/boot
+/recovery       emmc    /dev/block/bootdevice/by-name/recovery
+/misc           emmc    /dev/block/bootdevice/by-name/misc
+/system         ext4    /dev/block/bootdevice/by-name/system 
+/data           ext4    /dev/block/bootdevice/by-name/userdata          length=-16384
+/persist        ext4    /dev/block/bootdevice/by-name/persist
+/cache          ext4    /dev/block/bootdevice/by-name/cache
+
+# XXX sdcard, usbstorage
+# /devices/soc.0/7864900.sdhci/mmc_host/mmc*              auto                auto    defaults                                                                                            voldmanaged=sdcard1:auto,noemulatedsd,encryptable=footer
+# /devices/platform/msm_hsusb*                            auto                auto    defaults                                                                                            voldmanaged=usbdisk:auto

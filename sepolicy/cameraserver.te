@@ -1,0 +1,2 @@
+allow cameraserver debugfs_ion:file r_file_perms;
+set_prop(cameraserver, camera_prop)
