@@ -1,0 +1,1 @@
+allow init adsprpcd_file:filesystem { relabelto relabelfrom mount };

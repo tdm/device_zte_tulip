@@ -1,0 +1,2 @@
+allow qti_init_shell carrier_file:dir w_dir_perms;
+allow qti_init_shell carrier_file:file create_file_perms;

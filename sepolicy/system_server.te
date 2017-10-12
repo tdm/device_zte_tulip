@@ -1,0 +1,4 @@
+allow system_server mpctl_data_file:dir search;
+allow system_server persist_file:dir rw_dir_perms;
+allow system_server sysfs_gesture:file write;
+allow system_server sysfs_vibeamp:file rw_file_perms;
