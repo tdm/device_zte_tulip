@@ -38,9 +38,13 @@ typedef enum {
     SMART_PA_FOR_MUSIC = 0,
     SMART_PA_FOR_VOIP = 1,
     SMART_PA_FIND = 1,          /* ??? */
-    SMART_PA_FOR_VOICE = 2,
+    SMART_PA_FOR_VOICE = 3,
     SMART_PA_MMI = 3,           /* ??? */
 } smart_pa_mode_t;
+
+#define SPEAKER_BOTTOM 1
+#define SPEAKER_TOP 2
+#define SPEAKER_BOTH 3
 
 typedef struct amp_device {
     amplifier_device_t amp_dev;
@@ -87,6 +91,8 @@ static int amp_set_mode(struct amplifier_device *device, audio_mode_t mode)
     int ret = 0;
     amp_device_t *dev = (amp_device_t *) device;
 
+    ALOGI("amp_set_mode: mode=0x%08x\n", mode);
+
     dev->mode = mode;
     return ret;
 }
@@ -105,20 +111,31 @@ static int amp_enable_output_devices(struct amplifier_device *device, uint32_t d
     if ((devices & SMART_PA_DEVICES_MASK) != 0) {
         if (enable) {
             smart_pa_mode_t mode;
+            int spk_sel = SPEAKER_BOTH;
 
             switch(dev->mode) {
-            case AUDIO_MODE_IN_CALL: mode = SMART_PA_FOR_VOICE; break;
-            case AUDIO_MODE_IN_COMMUNICATION: mode = SMART_PA_FOR_VOIP; break;
-            default: mode = SMART_PA_FOR_AUDIO;
+            case AUDIO_MODE_IN_CALL:
+                ALOGI("amp_enable_output_devices: AUDIO_MODE_IN_CALL\n");
+                mode = SMART_PA_FOR_VOICE;
+                spk_sel = SPEAKER_TOP;
+                break;
+            case AUDIO_MODE_IN_COMMUNICATION:
+                ALOGI("amp_enable_output_devices: AUDIO_MODE_IN_COMMUNICATION\n");
+                mode = SMART_PA_FOR_VOIP;
+                break;
+            default:
+                ALOGI("amp_enable_output_devices: audio mode default\n");
+                mode = SMART_PA_FOR_AUDIO;
             }
+            ALOGI("amp_enable_output_devices: speakeronmode=%d\n", (int)mode);
             set_clocks_enabled(true);
-            if ((ret = exTfa98xx_speakeron_both(mode, 3)) != 0) {
-                ALOGI("exTfa98xx_speakeron_both(%d) failed: %d\n", mode, ret);
-            }
-        } else {
             if ((ret = exTfa98xx_speakeroff()) != 0) {
                 ALOGI("exTfa98xx_speakeroff failed: %d\n", ret);
             }
+            if ((ret = exTfa98xx_speakeron_both(mode, spk_sel)) != 0) {
+                ALOGI("exTfa98xx_speakeron_both(%d) failed: %d\n", mode, ret);
+            }
+        } else {
             set_clocks_enabled(false);
         }
     }
