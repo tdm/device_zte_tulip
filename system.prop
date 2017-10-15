@@ -1,12 +1,11 @@
 # Audio
 audio_hal.period_size=192
-audio.offload.buffer.size.kb=1024
+audio.offload.buffer.size.kb=64
 audio.offload.multiple.enabled=false
 audio.offload.pcm.16bit.enable=true
 audio.offload.pcm.24bit.enable=true
-av.offload.enable=true
 
-ro.qc.sdk.audio.fluencetype=fluence
+ro.qc.sdk.audio.fluencetype=none
 ro.qc.sdk.audio.ssr=false
 use.voice.path.for.pcm.voip=true
 
@@ -14,12 +13,13 @@ persist.audio.fluence.voicecall=true
 persist.audio.fluence.voicerec=false
 persist.audio.fluence.speaker=true
 
-rec.playback.conc.disabled=true
-
 audio.ds1.metainfo.key=273
-dmid=-1286820014
+dmid=3067269873
+
+qcom.hw.aac.encoder=true
 
 # Bluetooth
+bluetooth.hfp.client=1
 qcom.bluetooth.soc=smd
 ro.bluetooth.dun=true
 ro.bluetooth.hfp.ver=1.7
@@ -37,9 +37,15 @@ ro.qualcomm.bt.hci_transport=smd
 # Camera
 camera.hal1.packagelist=com.skype.raider,com.google.android.talk
 camera.lowpower.record.enable=1
+camera.display.umax=1920x1080
+camera.display.lmax=1280x720
+media.camera.ts.monotonic=1
+camera.lowpower.record.enable=1
+persist.camera.stats.test=5
 
 # Display
 persist.hwc.mdpcomp.enable=true
+persist.hwc.downscale_threshold=1.15
 ro.opengles.version=196609
 ro.sf.lcd_density=480
 
