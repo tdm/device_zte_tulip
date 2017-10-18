@@ -149,8 +149,9 @@ on boot
 
     # LED
     chown system system /sys/class/leds/flashlight/brightness
-    chown system system /sys/class/leds/indicator/ModeRGB
-    chown system system /sys/class/leds/indicator/off_timer
+    chown system system /sys/class/leds/red/led_time
+    chown system system /sys/class/leds/green/led_time
+    chown system system /sys/class/leds/blue/led_time
 
 on post-fs-data
     # Create directory for TZ Apps
