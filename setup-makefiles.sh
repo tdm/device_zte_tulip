@@ -49,5 +49,12 @@ cat << EOF >> "$ANDROIDMK"
 \$(shell mkdir -p \$(PRODUCT_OUT)/system/vendor/lib64/egl && pushd \$(PRODUCT_OUT)/system/vendor/lib64 > /dev/null && ln -s egl/libEGL_adreno.so libEGL_adreno.so && popd > /dev/null)
 EOF
 
+# Blobs for TWRP data decryption
+cat << EOF >> "$BOARDMK"
+ifeq (\$(RECOVERY_VARIANT),twrp)
+TARGET_RECOVERY_DEVICE_DIRS += vendor/$VENDOR/$DEVICE/proprietary
+endif
+EOF
+
 # We are done!
 write_footers

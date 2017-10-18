@@ -54,4 +54,13 @@ setup_vendor "$DEVICE" "$VENDOR" "$CM_ROOT"
 
 extract "$MY_DIR"/proprietary-files.txt "$SRC"
 
+# qseecomd linkage for recovery
+RECOVERY_QSEECOMD="$CM_ROOT/vendor/$VENDOR/$DEVICE/proprietary/recovery/root/sbin/qseecomd"
+if [ -f "$RECOVERY_QSEECOMD" ]; then
+  sed 's@/system/bin/linker64@/sbin/linker64\x0\x0\x0\x0\x0\x0@' \
+      < "$RECOVERY_QSEECOMD" \
+      > "$RECOVERY_QSEECOMD.tmp"
+  mv "$RECOVERY_QSEECOMD.tmp" "$RECOVERY_QSEECOMD"
+fi
+
 "$MY_DIR"/setup-makefiles.sh
