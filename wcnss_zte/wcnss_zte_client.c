@@ -16,12 +16,7 @@
 
 //#define LOG_NDEBUG 0
 
-#define LOG_TAG "wcnss_htc"
-
-#define SUCCESS 0
-#define FAILED -1
-
-#define WIFIMAC_PATH "/persist/wifimac.dat"
+#define LOG_TAG "wcnss_zte"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -29,9 +24,15 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 #include <cutils/log.h>
+
+#define SUCCESS 0
+#define FAILED -1
+
+#define WIFIMAC_PATH "/persist/wifimac.dat"
 
 int wcnss_init_qmi(void)
 {
@@ -42,7 +43,7 @@ int wcnss_init_qmi(void)
 int wcnss_qmi_get_wlan_address(unsigned char *pBdAddr)
 {
     int fd, ret;
-    char buf[40];
+    char buf[9+5*6+1];
 
     fd = open(WIFIMAC_PATH, O_RDONLY);
     if (fd < 0) {
@@ -50,20 +51,25 @@ int wcnss_qmi_get_wlan_address(unsigned char *pBdAddr)
         return FAILED;
     }
 
-    ret = read(fd, buf, sizeof(buf));
+    memset(buf, 0, sizeof(buf));
+    ret = read(fd, buf, sizeof(buf)-1);
+    close(fd);
     if (ret < 0) {
-        ALOGE("Failure to read calibration data: %d\n", errno);
-        close(fd);
+        ALOGE("Failure to read MAC addr\n");
         return FAILED;
     }
 
-    sscanf(buf, "wifiaddr=0x%02hhx 0x%02hhx %02hhx 0x%02hhx 0x%02hhx 0x%02hhx",
+    ret = sscanf(buf, "wifiaddr:0x%02hhx 0x%02hhx 0x%02hhx 0x%02hhx 0x%02hhx 0x%02hhx",
             &pBdAddr[0],
             &pBdAddr[1],
             &pBdAddr[2],
             &pBdAddr[3],
             &pBdAddr[4],
             &pBdAddr[5]);
+    if (ret != 6) {
+        ALOGE("Failure to parse MAC addr\n");
+        return FAILED;
+    }
 
     ALOGI("Found MAC address: %02hhx:%02hhx:%02hhx:%02hhx:%02hhx:%02hhx\n",
             pBdAddr[0],
@@ -72,8 +78,6 @@ int wcnss_qmi_get_wlan_address(unsigned char *pBdAddr)
             pBdAddr[3],
             pBdAddr[4],
             pBdAddr[5]);
-
-    close(fd);
 
     return SUCCESS;
 }
