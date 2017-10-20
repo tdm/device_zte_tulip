@@ -18,6 +18,36 @@ dmid=3067269873
 
 qcom.hw.aac.encoder=true
 
+af.fast_track_multiplier=1
+audio.deep_buffer.media=true
+#audio.dolby.ds2.enabled=true
+#audio.dolby.ds2.hardbypass=true
+
+audio.offload.gapless.enabled=true
+audio.offload.min.duration.secs=30
+
+audio.offload.track.enable=true
+audio.offload.video=true
+audio.parser.ip.buffer.size=262144
+audio.playback.mch.downsample=true
+audio.pp.asphere.enabled=false
+audio.safx.pbe.enabled=true
+av.debug.disable.pers.cache=true
+
+persist.audio.fluence.speaker=false
+ro.qc.sdk.audio.fluencetype=fluence
+
+ro.zte.audio.hifitype=dual
+tunnel.audio.encode = false
+
+media.aac_51_output_enabled=true
+media.msm8956hw=0
+
+voice.conc.fallbackpath=deep-buffer
+voice.playback.conc.disabled=true
+voice.record.conc.disabled=false
+voice.voip.conc.disabled=false
+
 # Bluetooth
 bluetooth.hfp.client=1
 qcom.bluetooth.soc=smd

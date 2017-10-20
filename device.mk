@@ -35,7 +35,6 @@ $(call inherit-product-if-exists, frameworks/native/build/phone-xxhdpi-3072-hwui
 
 # Permissions
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
@@ -78,15 +77,17 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio_effects.conf:system/etc/audio_effects.conf \
-    $(LOCAL_PATH)/configs/audio_output_policy.conf:system/vendor/etc/audio_output_policy.conf \
-    $(LOCAL_PATH)/configs/audio_platform_info.xml:system/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/configs/audio_platform_info_extcodec.xml:system/etc/audio_platform_info_extcodec.xml \
+    $(LOCAL_PATH)/configs/audio_platform_info.xml:system/etc/audio_platform_info.xml \
     $(LOCAL_PATH)/configs/audio_policy_configuration.xml:system/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/configs/mixer_paths.xml:system/etc/mixer_paths.xml \
+    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/configs/mixer_paths_wcd9330.xml:system/etc/mixer_paths_wcd9330.xml \
+    $(LOCAL_PATH)/configs/mixer_paths.xml:system/etc/mixer_paths.xml \
     $(LOCAL_PATH)/configs/sound_trigger_mixer_paths_wcd9330.xml:system/etc/sound_trigger_mixer_paths_wcd9330.xml \
     $(LOCAL_PATH)/configs/sound_trigger_mixer_paths.xml:system/etc/sound_trigger_mixer_paths.xml \
-    $(LOCAL_PATH)/configs/sound_trigger_platform_info.xml:system/etc/sound_trigger_platform_info.xml
+    $(LOCAL_PATH)/configs/sound_trigger_platform_info.xml:system/etc/sound_trigger_platform_info.xml \
+    $(LOCAL_PATH)/configs/vendor/audio_effects.conf:system/vendor/etc/audio_effects.conf \
+    $(LOCAL_PATH)/configs/vendor/audio_output_policy.conf:system/vendor/etc/audio_output_policy.conf
 
 PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:system/etc/a2dp_audio_policy_configuration.xml \
@@ -159,7 +160,7 @@ PRODUCT_PACKAGES += \
 
 # IRQ
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/msm_irqbalance.conf:system/vendor/etc/msm_irqbalance.conf
+    $(LOCAL_PATH)/configs/vendor/msm_irqbalance.conf:system/vendor/etc/msm_irqbalance.conf
 
 # IRSC
 PRODUCT_COPY_FILES += \

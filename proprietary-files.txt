@@ -70,6 +70,35 @@ etc/acdbdata/QRD/QRD_Hdmi_cal.acdb
 etc/acdbdata/QRD/QRD_Headset_cal.acdb
 etc/acdbdata/QRD/QRD_Speaker_cal.acdb
 
+# Audio firmware
+etc/firmware/ak4962_aram_karaoke_spk.bin
+etc/firmware/ak4962_cram_interview_record.bin
+etc/firmware/ak4962_cram_karaoke_cave.bin
+etc/firmware/ak4962_cram_karaoke_cloister.bin
+etc/firmware/ak4962_cram_karaoke_live.bin
+etc/firmware/ak4962_cram_karaoke_room.bin
+etc/firmware/ak4962_cram_karaoke_spk_live.bin
+etc/firmware/ak4962_cram_karaoke_theater.bin
+etc/firmware/ak4962_cram_karaoke_valley.bin
+etc/firmware/ak4962_cram_narrow_headphone.bin
+etc/firmware/ak4962_cram_narrow_hf.bin
+etc/firmware/ak4962_cram_narrow_hp.bin
+etc/firmware/ak4962_cram_narrow_hs.bin
+etc/firmware/ak4962_cram_sound_record.bin
+etc/firmware/ak4962_cram_voice_recognition.bin
+etc/firmware/ak4962_cram_voice_record.bin
+etc/firmware/ak4962_cram_wide_headphone.bin
+etc/firmware/ak4962_cram_wide_hf.bin
+etc/firmware/ak4962_cram_wide_hp.bin
+etc/firmware/ak4962_cram_wide_hs.bin
+etc/firmware/ak4962_pram_interview_record.bin
+etc/firmware/ak4962_pram_karaoke.bin
+etc/firmware/ak4962_pram_karaoke_spk.bin
+etc/firmware/ak4962_pram_narrow.bin
+etc/firmware/ak4962_pram_sound_record.bin
+etc/firmware/ak4962_pram_voice_recognition.bin
+etc/firmware/ak4962_pram_wide.bin
+
 # Bluetooth
 bin/hci_qcomm_init
 bin/wcnss_filter
