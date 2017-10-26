@@ -1,9 +1,9 @@
 $(call inherit-product, device/zte/tulip/full_tulip.mk)
 
-# Inherit some common Lineage stuff.
-$(call inherit-product, vendor/cm/config/common_full_phone.mk)
+# Inherit some common AOKP stuff.
+$(call inherit-product, vendor/aokp/configs/common_full_phone.mk)
 
-PRODUCT_NAME := lineage_tulip
+PRODUCT_NAME := aokp_tulip
 BOARD_VENDOR := zte
 TARGET_VENDOR := zte
 PRODUCT_DEVICE := tulip
