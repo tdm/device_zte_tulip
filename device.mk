@@ -216,6 +216,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libtinyxml
 
+# Recovery
+PRODUCT_PACKAGES += \
+    librecovery_updater_tulip
+
 # RIL
 PRODUCT_PACKAGES += \
     libcnefeatureconfig \
