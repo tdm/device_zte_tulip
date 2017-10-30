@@ -35,10 +35,10 @@
 #define KB 1024
 
 #define SBL1_PART_PATH "/dev/block/bootdevice/by-name/sbl1"
-#define SBL1_VER_STR "hTCVer"
-#define SBL1_VER_STR_LEN 6
+#define SBL1_VER_STR "OEM_IMAGE_VERSION_STRING="
+#define SBL1_VER_STR_LEN 25
 #define SBL1_VER_BUF_LEN 255
-#define SBL1_SZ 1024 * KB    /* MMAP 1024K of SBL1, SBL1 partition is 1024K */
+#define SBL1_SZ 512 * KB    /* MMAP 512K of SBL1, SBL1 partition is 512K */
 
 #define TZ_PART_PATH "/dev/block/bootdevice/by-name/tz"
 #define TZ_VER_STR "QC_IMAGE_VERSION_STRING="
