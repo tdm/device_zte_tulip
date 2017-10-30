@@ -172,7 +172,7 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
-    pp_calib_data_samsung_s6e3fa3x01_1080p_command_mode_dsi_panel.xml
+    pp_calib_data_zteSAM_S6E3FA3_SAM_10801920_5P2Inch.xml
 
 # Media
 PRODUCT_COPY_FILES += \
