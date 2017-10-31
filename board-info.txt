@@ -1,2 +1,1 @@
 require version-trustzone=TZ.BF.3.0.3-00048
-require version-sbl1=scl_xa243_237
