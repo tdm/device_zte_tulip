@@ -1,42 +1,18 @@
-
-# Audio
-/dev/htc-acoustic                           u:object_r:audio_device:s0
-/dev/rt5501                                 u:object_r:audio_device:s0
-/dev/tfa9887                                u:object_r:audio_device:s0
-/dev/tfa9887l                               u:object_r:audio_device:s0
-
-# Carrier
-/carrier(/.*)?                              u:object_r:carrier_file:s0
-
 # Debugfs
 /sys/kernel/debug/ion/heaps/system          u:object_r:debugfs_ion:s0
 
-# CMHW
-/sys/devices/virtual/timed_output/vibrator/voltage_level u:object_r:sysfs_vibeamp:s0
-
-# Fingerprint
-/data/fpc(/.*)?                             u:object_r:fingerprintd_data_file:s0
-/sys/devices/soc.0/fp_fpc1155.108(/.*)?     u:object_r:sysfs_fingerprint:s0
-
-# FRP
-/dev/block/bootdevice/by-name/frp           u:object_r:frp_block_device:s0
-
-# Gesture
-/sys/devices/virtual/htc_sensorhub/sensor_hub/gesture_motion    u:object_r:sysfs_gesture:s0
-
-# Properties
-/system/bin/operator-properties             u:object_r:operator-properties_exec:s0
-
 # Radio
 /dev/radio(/.*)?                            u:object_r:radio_data_file:s0
-/dev/block/bootdevice/by-name/rfg_[0-9]+     u:object_r:modem_efs_partition_device:s0
 
-# Storage
-/dev/block/bootdevice/by-name/extra         u:object_r:extra_block_device:s0
+# NFC
+/dev/pn548                                  u:object_r:nfc_device:s0
+
+# Goodix Fingerprint
+/dev/goodix_fp*                             u:object_r:gx_fpd_device:s0
+/system/bin/gx_fpd                          u:object_r:gx_fpd_exec:s0
+
+# Goodix Fingerprint data
+/data/system/fingerprint(/.*)?              u:object_r:gx_fpd_data_file:s0
 
 # ZRAM
 /dev/block/zram[0-9]+                       u:object_r:swap_block_device:s0
-
-# fingerprint
-/system/bin/gx_fpd                          u:object_r:fingerprintd_exec:s0
-/system/bin/fingerprintd_gx                 u:object_r:fingerprintd_exec:s0
