@@ -304,7 +304,6 @@ vendor/lib64/libssd.so
 vendor/lib/libQSEEComAPI.so
 
 # Fingerprint
-bin/fingerprintd_gx
 bin/gx_fpd
 lib64/hw/fingerprint.goodix.so
 lib64/hw/gxfingerprint.default.so

@@ -327,12 +327,12 @@ service gx_fpd /system/bin/gx_fpd
     class late_start
     user root
     group system
-    onrestart restart fingerprintd_gx
+    onrestart restart fingerprintd
 
-service fingerprintd_gx /system/bin/fingerprintd_gx
+service fingerprintd /system/bin/fingerprintd
     class late_start
     user system
-    group system input
+    onrestart restart gx_fpd
     writepid /dev/cpuset/system-background/tasks
 
 on property:wc_transport.start_hci=true
