@@ -175,10 +175,6 @@ const char CameraParameters::FOCUS_MODE_MANUAL_POSITION[] = "manual";
 const char CameraParameters::LIGHTFX_LOWLIGHT[] = "low-light";
 const char CameraParameters::LIGHTFX_HDR[] = "high-dynamic-range";
 
-// HTC settings
-const char CameraParameters::SCENE_MODE_TEXT[] = "text";
-const char CameraParameters::KEY_SMILEINFO_BYFACE_SUPPORTED[] = "smileinfo-byface-supported";
-
 static String8 get_forced_value(String8 key, String8 value)
 {
     if (key == "face-detection-values") return String8("off");
