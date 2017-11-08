@@ -98,7 +98,6 @@ PRODUCT_COPY_FILES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    libshim_camera \
     Snap
 
 # Display
@@ -115,8 +114,7 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint
 PRODUCT_PACKAGES += \
-    fingerprintd \
-    libshim_power
+    fingerprintd
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.hardware.fingerprint=goodix
 
