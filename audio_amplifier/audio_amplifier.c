@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <dlfcn.h>
 #include <cutils/log.h>
 #include <cutils/str_parms.h>
 
@@ -30,7 +31,6 @@ extern int exTfa98xx_calibration(void);
 extern int exTfa98xx_speakeron_both(uint32_t, int);
 extern int exTfa98xx_speakeroff();
 
-//#define AMP_MIXER_CTL "Initial external PA"
 #define AMP_MIXER_CTL "Tfa98xx Mode"
 
 typedef enum {
@@ -42,26 +42,35 @@ typedef enum {
     SMART_PA_MMI = 3,           /* ??? */
 } smart_pa_mode_t;
 
+#define TFA9890_DEVICE_MASK \
+    (AUDIO_DEVICE_OUT_EARPIECE | \
+     AUDIO_DEVICE_OUT_SPEAKER)
+
 #define SPEAKER_BOTTOM 1
 #define SPEAKER_TOP 2
 #define SPEAKER_BOTH 3
 
-typedef struct amp_device {
+typedef struct tfa9890_device {
     amplifier_device_t amp_dev;
     audio_mode_t mode;
-} amp_device_t;
+} tfa9890_device_t;
 
-static amp_device_t *amp_dev;
+static tfa9890_device_t *tfa_dev;
 
-static int set_clocks_enabled(bool enable)
+static int g_tfa_mode;
+static int g_tfa_old_mode;
+
+static int
+tfa9890_enable_clocks(bool enable)
 {
     enum mixer_ctl_type type;
     struct mixer_ctl *ctl;
-    struct mixer *mixer = mixer_open(0);
+    struct mixer *mixer;
+    int val;
 
-    ALOGI("set_clocks_enabled: ctl=%s enable=%s\n",
-          AMP_MIXER_CTL, (enable ? "true" : "false"));
+    ALOGI("%s: enable=%s\n", __func__, (enable ? "true" : "false"));
 
+    mixer = mixer_open(0);
     if (mixer == NULL) {
         ALOGE("Error opening mixer 0");
         return -1;
@@ -81,81 +90,113 @@ static int set_clocks_enabled(bool enable)
         return -ENOTTY;
     }
 
+    val = mixer_ctl_get_value(ctl, 0);
+    ALOGI("%s: before: val=%d\n", __func__, val);
     mixer_ctl_set_value(ctl, 0, enable);
+    val = mixer_ctl_get_value(ctl, 0);
+    ALOGI("%s: after: val=%d\n", __func__, val);
+
     mixer_close(mixer);
+
     return 0;
 }
 
-static int amp_set_mode(struct amplifier_device *device, audio_mode_t mode)
+static int
+tfa9890_enable_device(audio_mode_t audio_mode)
+{
+    smart_pa_mode_t mode = SMART_PA_FOR_AUDIO;
+    int spk_sel = SPEAKER_BOTH;
+    int ret;
+
+    switch(audio_mode) {
+    case AUDIO_MODE_NORMAL:
+        ALOGI("%s: AUDIO_MODE_NORMAL\n", __func__);
+        mode = SMART_PA_FOR_AUDIO;
+        spk_sel = SPEAKER_BOTH;
+        break;
+    case AUDIO_MODE_RINGTONE:
+        ALOGI("%s: AUDIO_MODE_RINGTONE\n", __func__);
+        mode = SMART_PA_FOR_VOICE;
+        spk_sel = SPEAKER_BOTH;
+        break;
+    case AUDIO_MODE_IN_CALL:
+        ALOGI("%s: AUDIO_MODE_IN_CALL\n", __func__);
+        mode = SMART_PA_FOR_VOICE;
+        spk_sel = SPEAKER_TOP;
+        break;
+    case AUDIO_MODE_IN_COMMUNICATION:
+        ALOGI("%s: AUDIO_MODE_IN_COMMUNICATION\n", __func__);
+        mode = SMART_PA_FOR_VOIP;
+        spk_sel = SPEAKER_TOP;
+        break;
+    default:
+        ALOGI("%s: audio mode default\n", __func__);
+    }
+    tfa9890_enable_clocks(false);
+    tfa9890_enable_clocks(true);
+    ret = exTfa98xx_speakeron_both(mode, spk_sel);
+    if (ret != 0) {
+        ALOGI("exTfa98xx_speakeron_both(%d,%d) failed: %d\n", mode, spk_sel, ret);
+    }
+    return ret;
+}
+
+static int
+tfa9890_disable_device()
+{
+    tfa9890_enable_clocks(false);
+    return 0;
+}
+
+static int
+amp_set_mode(amplifier_device_t *amp, audio_mode_t mode)
 {
     int ret = 0;
-    amp_device_t *dev = (amp_device_t *) device;
+    tfa9890_device_t *dev = (tfa9890_device_t *)amp;
 
-    ALOGI("amp_set_mode: mode=0x%08x\n", mode);
+    ALOGI("%s: mode=0x%08x\n", __func__, mode);
 
     dev->mode = mode;
     return ret;
 }
 
-#define SMART_PA_DEVICES_MASK \
-    (AUDIO_DEVICE_OUT_EARPIECE | AUDIO_DEVICE_OUT_SPEAKER | AUDIO_DEVICE_OUT_WIRED_HEADSET | \
-     AUDIO_DEVICE_OUT_WIRED_HEADPHONE)
-
-static int amp_enable_output_devices(struct amplifier_device *device, uint32_t devices, bool enable)
+static int
+amp_enable_output_devices(amplifier_device_t *amp, uint32_t devices, bool enable)
 {
-    amp_device_t *dev = (amp_device_t *) device;
-    int ret;
+    tfa9890_device_t *dev = (tfa9890_device_t *)amp;
 
-    ALOGI("amp_enable_output_devices: devices=0x%08x enable=%s\n",
+    ALOGI("%s: devices=0x%08x enable=%s\n", __func__,
           devices, (enable ? "true" : "false"));
-    if ((devices & SMART_PA_DEVICES_MASK) != 0) {
-        if (enable) {
-            smart_pa_mode_t mode;
-            int spk_sel = SPEAKER_BOTH;
 
-            switch(dev->mode) {
-            case AUDIO_MODE_IN_CALL:
-                ALOGI("amp_enable_output_devices: AUDIO_MODE_IN_CALL\n");
-                mode = SMART_PA_FOR_VOICE;
-                spk_sel = SPEAKER_TOP;
-                break;
-            case AUDIO_MODE_IN_COMMUNICATION:
-                ALOGI("amp_enable_output_devices: AUDIO_MODE_IN_COMMUNICATION\n");
-                mode = SMART_PA_FOR_VOIP;
-                break;
-            default:
-                ALOGI("amp_enable_output_devices: audio mode default\n");
-                mode = SMART_PA_FOR_AUDIO;
-            }
-            ALOGI("amp_enable_output_devices: speakeronmode=%d\n", (int)mode);
-            set_clocks_enabled(true);
-            if ((ret = exTfa98xx_speakeroff()) != 0) {
-                ALOGI("exTfa98xx_speakeroff failed: %d\n", ret);
-            }
-            if ((ret = exTfa98xx_speakeron_both(mode, spk_sel)) != 0) {
-                ALOGI("exTfa98xx_speakeron_both(%d) failed: %d\n", mode, ret);
-            }
-        } else {
-            set_clocks_enabled(false);
-        }
+    if ((devices & TFA9890_DEVICE_MASK) == 0) {
+        ALOGI("%s: No relevant devices", __func__);
+        return 0;
+    }
+
+    if (enable) {
+        tfa9890_enable_device(dev->mode);
+    }
+    else {
+        tfa9890_disable_device();
     }
 
     return 0;
 }
 
-static int amp_dev_close(hw_device_t *device)
+static int
+amp_dev_close(hw_device_t *device)
 {
-    amp_device_t *dev = (amp_device_t*) device;
+    tfa9890_device_t *dev = (tfa9890_device_t*) device;
 
     free(dev);
 
     return 0;
 }
 
-int tfa9890_set_parameters(struct amplifier_device *device, struct str_parms *parms) {
-    ALOGD("%s: %p\n", __func__, parms);
-    amp_device_t *tfa9890 = (amp_device_t*) device;
-    // todo, dump parms.  Might be more stuff we need to do here
+static int
+amp_set_parameters(amplifier_device_t *amp, struct str_parms *parms) {
+    ALOGI("%s: %p, %p\n", __func__, amp, parms);
+
     return 0;
 }
 
@@ -166,35 +207,36 @@ amp_module_open(const hw_module_t *module,
 {
     int ret;
 
-    if (amp_dev) {
-        ALOGE("%s:%d: Unable to open second instance of the amplifier\n",
-              __func__, __LINE__);
+    if (tfa_dev) {
+        ALOGE("%s: Unable to open second instance of the amplifier\n",
+              __func__);
         return -EBUSY;
     }
 
-    amp_dev = calloc(1, sizeof(amp_device_t));
-    if (!amp_dev) {
-        ALOGE("%s:%d: Unable to allocate memory for amplifier device\n",
-              __func__, __LINE__);
+    tfa_dev = calloc(1, sizeof(tfa9890_device_t));
+    if (!tfa_dev) {
+        ALOGE("%s: Unable to allocate memory for amplifier device\n",
+              __func__);
         return -ENOMEM;
     }
 
-    amp_dev->amp_dev.common.tag = HARDWARE_DEVICE_TAG;
-    amp_dev->amp_dev.common.module = (hw_module_t *) module;
-    amp_dev->amp_dev.common.version = HARDWARE_DEVICE_API_VERSION(1, 0);
-    amp_dev->amp_dev.common.close = amp_dev_close;
+    tfa_dev->amp_dev.common.tag = HARDWARE_DEVICE_TAG;
+    tfa_dev->amp_dev.common.module = (hw_module_t *) module;
+    tfa_dev->amp_dev.common.version = HARDWARE_DEVICE_API_VERSION(1, 0);
+    tfa_dev->amp_dev.common.close = amp_dev_close;
 
-    amp_dev->amp_dev.enable_output_devices = amp_enable_output_devices;
-    amp_dev->amp_dev.set_mode = amp_set_mode;
+    tfa_dev->amp_dev.enable_output_devices = amp_enable_output_devices;
+    tfa_dev->amp_dev.set_mode = amp_set_mode;
+    tfa_dev->amp_dev.set_parameters = amp_set_parameters;
 
-    *device = (hw_device_t *) amp_dev;
-
-    set_clocks_enabled(true);
+    tfa9890_enable_clocks(true);
     ret = exTfa98xx_calibration();
     if (ret != 0) {
         ALOGI("exTfa98xx_calibration failed: %d\n", ret);
     }
-    set_clocks_enabled(false);
+    tfa9890_enable_clocks(false);
+
+    *device = (hw_device_t *) tfa_dev;
 
     return 0;
 }
