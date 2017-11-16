@@ -128,6 +128,7 @@ static int amp_enable_output_devices(struct amplifier_device *device, uint32_t d
                 mode = SMART_PA_FOR_AUDIO;
             }
             ALOGI("amp_enable_output_devices: speakeronmode=%d\n", (int)mode);
+            set_clocks_enabled(false);
             set_clocks_enabled(true);
             if ((ret = exTfa98xx_speakeroff()) != 0) {
                 ALOGI("exTfa98xx_speakeroff failed: %d\n", ret);
