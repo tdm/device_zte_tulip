@@ -5,10 +5,10 @@ audio.offload.multiple.enabled=false
 audio.offload.pcm.16bit.enable=true
 audio.offload.pcm.24bit.enable=true
 
-ro.qc.sdk.audio.fluencetype=none
 ro.qc.sdk.audio.ssr=false
 use.voice.path.for.pcm.voip=true
 
+ro.qc.sdk.audio.fluencetype=fluence
 persist.audio.fluence.voicecall=true
 persist.audio.fluence.voicerec=false
 persist.audio.fluence.speaker=true
@@ -33,9 +33,6 @@ audio.playback.mch.downsample=true
 audio.pp.asphere.enabled=false
 audio.safx.pbe.enabled=true
 av.debug.disable.pers.cache=true
-
-persist.audio.fluence.speaker=false
-ro.qc.sdk.audio.fluencetype=fluence
 
 ro.zte.audio.hifitype=dual
 tunnel.audio.encode = false
@@ -70,7 +67,6 @@ camera.lowpower.record.enable=1
 camera.display.umax=1920x1080
 camera.display.lmax=1280x720
 media.camera.ts.monotonic=1
-camera.lowpower.record.enable=1
 persist.camera.stats.test=5
 
 # Display
