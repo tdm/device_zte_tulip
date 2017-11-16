@@ -230,16 +230,14 @@ static int camera_set_parameters(struct camera_device *device,
     if (!device)
         return -EINVAL;
 
-    /* Front camera can only preview at 2048x1536 */
+    /* Both cameras can only preview at 2048x1536 */
     CameraParameters2 cp;
-    if (CAMERA_ID(device) == FRONT_CAMERA_ID) {
-        cp.unflatten(String8(parameters));
-        const char* preview_size = cp.get("preview-size");
-        if (preview_size && strcmp(preview_size, "2048x1536") != 0) {
-            ALOGI("camera_set_parameters: preview-size: %s -> 2048x1536", preview_size);
-            cp.set("preview-size", "2048x1536");
-            parameters = cp.flatten().string();
-        }
+    cp.unflatten(String8(parameters));
+    const char* preview_size = cp.get("preview-size");
+    if (preview_size && strcmp(preview_size, "2048x1536") != 0) {
+        ALOGI("camera_set_parameters: preview-size: %s -> 2048x1536", preview_size);
+        cp.set("preview-size", "2048x1536");
+        parameters = cp.flatten().string();
     }
 
     return VENDOR_CALL(device, set_parameters, parameters);
