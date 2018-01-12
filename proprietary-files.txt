@@ -29,6 +29,8 @@ etc/settings/dual_pa_stereo_r.cnt
 etc/settings/handset_voicecall_pa_param.cnt
 etc/settings/handset_voicecall_pa_param_r.cnt
 etc/settings/left_spk_pa_param.cnt
+-lib/libtfa9890.so
+-lib64/libtfa9890.so
 
 # Audio ACDB
 etc/aanc_tuning_mixer.txt
