@@ -8,10 +8,7 @@ audio.offload.pcm.24bit.enable=true
 ro.qc.sdk.audio.ssr=false
 use.voice.path.for.pcm.voip=true
 
-ro.qc.sdk.audio.fluencetype=fluence
-persist.audio.fluence.voicecall=true
-persist.audio.fluence.voicerec=false
-persist.audio.fluence.speaker=false
+ro.qc.sdk.audio.fluencetype=none
 
 audio.ds1.metainfo.key=273
 dmid=3067269873
